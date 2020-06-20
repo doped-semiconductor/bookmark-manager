@@ -1,0 +1,43 @@
+{
+    "manifest_version": 2,
+    "name": "Bookmark Manager",
+    "version": "1.0.0",
+    "description": "A simple bookmark manager.",
+    "icons": {
+        "128":"icon.png"
+    },
+    "browser_action":{
+        "default_icon": {                    
+            "128": "icon.png"
+          },
+          "default_title": "Bookmarks", 
+          "default_popup": "popup.html" 
+    },
+    "background": {
+        "scripts": ["js/background.js"],
+        "persistent": false
+    },
+    "permissions": [
+        "activeTab","file://*/*","tabs","bookmarks"
+    ],
+    "content_scripts": [
+        {
+            "matches": ["<all_urls>"],
+            "js": ["js/content.js"]
+        }
+    ],
+
+    "commands": {
+        "_execute_browser_action": {
+          "suggested_key": {
+            "default": "Ctrl+B",
+            "mac": "MacCtrl+B"
+          },
+          "description": "Opens hello.html"
+        }
+    },
+      
+    "chrome_url_overrides" : {
+        "bookmarks": "manager.html"
+    }
+}

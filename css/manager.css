@@ -1,0 +1,103 @@
+html{
+    margin: 0;
+    padding: 0;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 10px;
+}
+
+body{
+    margin: 0;
+    padding: 0;
+}
+
+.cont{
+    padding: 10px 15px;
+}
+
+#header{
+    color: teal;
+    border-bottom: 1px solid teal;
+    font-size: 2.5em;
+}
+
+button{
+    background-color: white;
+    border: 1px white;
+    font-size: large;
+    padding: 10px;
+    margin: 5px 10px;
+    cursor: pointer;
+    border: 1px solid white;
+    color: darkslategray;
+}
+
+button:hover{
+    border: 1px solid teal
+}
+
+button:focus{
+    color: teal;
+}
+
+#search{
+    display: flex;
+    justify-content: space-between;
+}
+
+.left{
+    width: 40%
+}
+
+.right{
+    width: 50%
+}
+
+#searchbar{
+    width: 80%;
+    padding: 10px;
+}
+
+#searchoption{
+    width: 8em;
+    padding: 10px;
+    color: cadetblue;
+}
+
+select{
+    padding: 5px;
+}
+
+.rlunit{
+    margin: 10px 5px;
+    padding: 10px;;
+}
+
+.title{
+    font-size: large;
+}
+
+.url{
+    color: gray;
+    font-size: small;
+}
+
+.desc{
+    font-size: medium;
+}
+
+#navpanel{
+    display: block;
+}
+
+#recpanel{
+    display: none;
+}
+
+#latpanel{
+    display: none;
+}
+
+#searchpanel{
+    display: none;
+    font-size: 2em;
+}
