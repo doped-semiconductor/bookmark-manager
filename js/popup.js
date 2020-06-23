@@ -114,6 +114,68 @@ function getReadLater(){
     }
 }
 
+/** function to import bookmarks from chrome and send to server */
+var bookmarks_arr = {}
+function addBM(node, callback){
+   callback(node)
+}
+
+/** function to iterate bookmarks and add to bookmarks_arr */
+function printBookmarks(id) {
+    chrome.bookmarks.getChildren(id, function(children) {
+        children.forEach(function(bookmark) {
+            var bookmark_json = {
+                id : bookmark.id,
+                title : bookmark.title,
+                index : bookmark.index,
+                url : bookmark.url,
+                parent : bookmark.parentId,
+                date : bookmark.dateAdded
+            }                 
+            addBM(bookmark_json, function(node){
+                window.bookmarks_arr[node.id] = node
+            }) 
+            printBookmarks(bookmark.id);              
+        });
+    });   
+
+}
+
+/** function to make a post request */
+function postImportData(data){
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://localhost:5000/", true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify({'instruction':'import','data':data}));
+    xhr.onload = function() {
+        var msg = document.getElementById('message')
+        console.log("HELLO")
+        console.log(this.responseText);
+        var data = JSON.parse(this.responseText);
+        console.log(data, Object.keys(data).length, this.responseText.length);
+        if (Object.keys(data).length === 1){
+            msg.innerHTML = 'Did not recieve data! Please try again.'
+        }
+        else
+        {
+            var n = data.n
+            msg.innerHTML = 'Done! Received Bookmarks: '+n.toString()
+        }
+    }    
+}
+
+/** function to deal with button click */
+function importBM(){
+    var impbutton = document.getElementById('importhead')
+    impbutton.addEventListener('click', (ev)=>{
+        var msg = document.getElementById('message')
+        msg.style.display = 'block'
+        msg.innerHTML = "Importing..."
+        window.printBookmarks('0')
+        window.postImportData(window.bookmarks_arr) 
+    })
+}
+
 window.onload=function(){
     //toggle add header
     var addHead = document.getElementById("addhead")
@@ -143,6 +205,10 @@ window.onload=function(){
     //get read later sites
     getReadLater()
 
+    //import button
+    importBM()
+
+    //opens main page
     document.getElementById('manage').addEventListener('click', (ev) =>{
         window.open("manager.html");
     })

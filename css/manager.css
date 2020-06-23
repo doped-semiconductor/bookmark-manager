@@ -15,9 +15,24 @@ body{
 }
 
 #header{
-    color: teal;
-    border-bottom: 1px solid teal;
+    color: white;
+    background: linear-gradient(-45deg, #42e0c6, #33ad99, #237a6c, #13423a);
+    background-size: 400% 400%;
+    border-bottom: 5px solid white;
+	animation: gradient 15s ease infinite;
     font-size: 2.5em;
+}
+
+@keyframes gradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
 }
 
 button{
