@@ -14,6 +14,54 @@ functions:
 
 */
 
+//getRecents
+function recentlyAdded(n){
+    var data = {
+        'type':'byTitle',
+        "lim":n,
+    }
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://localhost:5000/", true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify({'instruction':'recent', "data":data}));
+    xhr.onload = function() {
+        console.log("GOT RESPONSE:")
+        console.log(this.responseText);
+        var data = JSON.parse(this.responseText);
+        console.log(data, Object.keys(data).length);
+        var done = document.getElementById('done')
+        if (Object.keys(data).length === 1){
+            done.innerHTML = 'Didnt get data to server'
+        }
+        else
+        {
+            var n = data.output
+            console.log(n)
+            done.innerHTML = 'Done!'}
+        }
+}
+
+//geturl
+function getUrl(){
+    
+    chrome.tabs.query({
+        'active':true,
+        'windowId':chrome.windows.WINDOW_ID_CURRENT},
+        (tabs) => {
+            
+            console.log(tabs[0])
+
+            var url = tabs[0].url
+            var inp = document.getElementById('url')
+            inp.value = url
+
+            var title = tabs[0].title
+            var inp = document.getElementById('title')
+            inp.value = title
+        }
+    );
+}
+
 //add a word tag into doc
 function addTag(word){
     var x = addkey(word)
@@ -43,6 +91,7 @@ function addkey(word){
     }
     return true
 }
+
 function removekey(word){
     var Index = cust_keys.indexOf(word);
     cust_keys.splice(Index, 1);
@@ -176,28 +225,37 @@ function importBM(){
     })
 }
 
-window.onload=function(){
-    //toggle add header
+/** function to toggle add-head button */
+function addToggle(){         
     var addHead = document.getElementById("addhead")
-    var addToggle = document.getElementById("addform");
-    if (addHead){
-        document.getElementById("addhead").addEventListener('click',function(event){  
-            if (addToggle.style.display == "none") addToggle.style.display = "block";
-            else addToggle.style.display = "none";                     
-                    
-         });    
-    }
-    
-    //enter button in input tagbar
+    var addToggle = document.getElementById("addform");    
+    addHead.addEventListener('click',function(event){  
+        if (addToggle.style.display == "none") addToggle.style.display = "block";
+        else addToggle.style.display = "none";
+    });     
+
+}
+
+/** function to enter word on display from tag input */
+function tagBar(){
     var tagbar = document.getElementById('tagbar')
     tagbar.addEventListener('keydown',(ev) => {
         if(ev.keyCode===13){
             addTag(tagbar.value)
-            //addkey(tagbar.value)
-            tagbar.value = ''          
-            
+            tagbar.value = ''
         }
     })
+}
+
+window.onload=function(){
+    //toggle add header
+    addToggle()
+
+    //get title and url of current tab
+    getUrl()    
+    
+    //enter button in input tagbar
+    tagBar()
 
     //get recent sites
     getRecent()
@@ -212,9 +270,4 @@ window.onload=function(){
     document.getElementById('manage').addEventListener('click', (ev) =>{
         window.open("manager.html");
     })
-    
-    
 }
-
-
- 

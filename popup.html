@@ -22,26 +22,37 @@
             <!--RESPONSE TEXT HERE-->
         </div>
 
-        <div class="sect" id="addform">            
+        <div class = "sect" id="tags">
+            Tags
+        </div> 
+
+        <div class="sect" id="addform">
+            <!--invisible tag holder-->
+            <div id="taghold">
+                <text id="tend"></text>
+            </div>
+            <!--ends-->            
             <label class="labels">Title:</label>
             <input class="add" id="title" />
             <br>
             <label class="labels">URL:</label>
             <input class="add" id="url" />
-            <br>
+            <br>            
             <label class="labels">Tags:</label>
-            <input class="add" id="tags" />
+            <input class="add" id="tagbar" />
             <br>
             <label class="labels">Folder:</label>
             <input class="add" id="parent" />
             <label class="labels"></label>
-            <button id="asubmit">Add</button>
+            
+                <button class="asubmit" id="ab1">Add</button>
+                <button class="asubmit" id="ab2">Add and Read Later</button>
+                       
         </div>
-
-
+        
         <div class = "sect" id="recently">
             <div class="left" id="rt">Recently visited</div>
-            <div class="right"><button id = "showalllater">Show All</button></div>
+            <div class="right"><button id = "showallrecent">Show All</button></div>
         </div> 
 
         <div class = "sect" id="recent">
@@ -60,18 +71,12 @@
                 <a class="url" id="u3"></a>
                 <a class="desc" id="d3"></a>                
             </div>
-        </div>
-
-        <div class = "sect" id="tags">
-            Tags
+        </div>        
+        <!--
+            <div class = "sect" >
+            
         </div> 
-        
-        <div class = "sect" >
-            <div id="taghold">
-                <text id="tend"></text>
-            </div>
-            <input id="tagbar" placeholder="Enter tags"/>
-        </div>  
+        -->     
         
         <div class = "sect" id="later">
             <div class="left">Read Later</div>
