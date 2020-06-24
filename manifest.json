@@ -18,7 +18,7 @@
         "persistent": false
     },
     "permissions": [
-        "activeTab","file://*/*","tabs","bookmarks"
+        "activeTab","file://*/*","tabs","bookmarks","storage.system"
     ],
     "content_scripts": [
         {

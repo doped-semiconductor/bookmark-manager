@@ -10,14 +10,47 @@ functions:
 
 4. Add current page as bookmark
     a. toggle
-
-
 */
 
-//getRecents
+/* get folder options */
+function getFolderOptions(){
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://localhost:5000/", true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify({'instruction':'folder', "data":'hello'}));
+    xhr.onload = function() {
+        //console.log("GOT FOLDER RESPONSE:")
+        //console.log(this.responseText);
+        var data = JSON.parse(this.responseText);
+        if (Object.keys(data).length === 1){
+            console.log('Couldnt get data')
+        }
+        else{
+            var par = document.getElementById('parent')
+            data.output.forEach(e =>{
+                var el = document.createElement("option");
+                el.textContent = e.title;
+                el.value = e.id;
+                par.appendChild(el);
+            })
+        }
+    }
+}
+
+/* title case */
+function titleCase(sentence) {
+    sentence = sentence.toLowerCase().split(" ");
+    for (let i = 0; i < sentence.length; i++) {
+      sentence[i] = sentence[i][0].toUpperCase() + sentence[i].slice(1);
+    }
+    
+    return sentence.join(" ");
+}
+
+/* function to get top3 recently accessed bookmarks */
 function recentlyAdded(n){
     var data = {
-        'type':'byTitle',
+        'type':'recent',
         "lim":n,
     }
     var xhr = new XMLHttpRequest();
@@ -28,27 +61,71 @@ function recentlyAdded(n){
         console.log("GOT RESPONSE:")
         console.log(this.responseText);
         var data = JSON.parse(this.responseText);
-        console.log(data, Object.keys(data).length);
-        var done = document.getElementById('done')
+        //console.log(data, Object.keys(data).length);
         if (Object.keys(data).length === 1){
-            done.innerHTML = 'Didnt get data to server'
+            console.log('Couldnt get data')
         }
         else
         {
-            var n = data.output
-            console.log(n)
-            done.innerHTML = 'Done!'}
+            // data.output
+            for (var i=1;i<data.output.length+1;i++){
+                var site = data.output[i-1]
+                //console.log(site)
+                document.getElementById('t'+i.toString()).innerHTML = titleCase(site.title);        
+                document.getElementById('u'+i.toString()).innerHTML = (site.url).substring(0, 25)+'...';
+                document.getElementById('r'+i.toString()).addEventListener('click',(ev)=>{
+                    window.open(site.url)
+                })
+            }
         }
+    }
+}
+
+/* load bookmarks to read later */
+function recentlyLater(n){
+    var data = {
+        //'type':'later',
+        "lim":n
+    }
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://localhost:5000/", true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify({'instruction':'later', "data":data}));
+    xhr.onload = function() {
+        console.log("GOT RESPONSE:")
+        console.log(this.responseText);
+        var data = JSON.parse(this.responseText);
+        //console.log(data, Object.keys(data).length);
+        if (Object.keys(data).length === 1){
+            console.log('Couldnt get data')
+        }
+        else
+        {
+            //console.log(data.output) 
+            if (data.output.length===0){
+                document.getElementById('rlMsg').style.display = 'block'
+            }
+
+            for (var i=1;i<data.output.length+1;i++){
+                var site = data.output[i-1]
+                //console.log(site)
+                document.getElementById('tt'+i.toString()).innerHTML = titleCase(site.title);        
+                document.getElementById('uu'+i.toString()).innerHTML = site.url;
+                document.getElementById('rr'+i.toString()).addEventListener('click',(ev)=>{
+                    window.open(site.url)
+                })
+            }
+        }
+    }
 }
 
 //geturl
-function getUrl(){
+function getUrl(cb){
     
     chrome.tabs.query({
         'active':true,
         'windowId':chrome.windows.WINDOW_ID_CURRENT},
-        (tabs) => {
-            
+        (tabs) => {            
             console.log(tabs[0])
 
             var url = tabs[0].url
@@ -58,8 +135,51 @@ function getUrl(){
             var title = tabs[0].title
             var inp = document.getElementById('title')
             inp.value = title
+
+            /* generate tags */
+            var data = {"url":url.toString()}
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "http://localhost:5000/", true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(JSON.stringify({'instruction':'tags', "data":data}));
+            xhr.onload = function(){
+                console.log("TAG RESPONSE:")
+                console.log(this.responseText);
+                var data = JSON.parse(this.responseText);
+                var msg = document.getElementById('tagmsg')
+                if(data.data == 'not received'){
+                    console.log('no tags :(')
+                    msg.innerHTML = 'Could not get tags!'
+                    return false
+                }
+                else if(data.tags == null){
+                    console.log('no tags pt 2 :(')
+                    msg.innerHTML = 'Could not get tags!'
+                    return false
+                }
+                else{
+                    console.log('tags',data.tags)
+                    //cb(data.tags)
+                    data.tags.forEach(e => {
+                        console.log(e.term)
+                        var t = document.createElement('text')
+                        var n = document.createTextNode(e.term)
+                        t.appendChild(n)
+                        t.classList.add('tagword') 
+                        t.style.margin = '100px 5px'   
+                        var par = document.getElementById("taghold")
+                        var end = document.getElementById('tend')
+                        t.addEventListener('click',(ev) =>{
+                            par.removeChild(t)
+                        })
+                        par.insertBefore(t,end)
+                        par.style.display = 'inline-block'
+                    })
+                    msg.style.display = 'none'
+                }
+            }
         }
-    );
+    );    
 }
 
 //add a word tag into doc
@@ -92,75 +212,10 @@ function addkey(word){
     return true
 }
 
+//toggle added key
 function removekey(word){
     var Index = cust_keys.indexOf(word);
     cust_keys.splice(Index, 1);
-}
-
-/* function to get top3 recently accessed bookmarks */
-function getRecent(){
-    /*
-    1. connect to db
-    2. query and return 3 vals as array
-
-    query format returned:
-    [{title:"",url:"",desc:""}]
-    */
-
-    var query_result = [
-        {
-            'title':"How to Make Cake",
-            'url':"www.cakemake.com/12",
-            'desc':"Traditional ecipe for banana cakes."
-        },
-        {
-            'title':"Exam Guidelines",
-            'url':"www.cbse.com/",
-            'desc':"New 2020 Regulations."
-        },
-        {
-            'title':"World News",
-            'url':"www.newschannel.com/world",
-            'desc':"Fresh News."
-        }
-    ]
-
-    for (var i=1;i<4;i++){
-        var site = query_result[i-1]
-        console.log(site)
-        document.getElementById('t'+i.toString()).innerHTML = site.title;        
-        document.getElementById('u'+i.toString()).innerHTML = site.url;
-        document.getElementById('d'+i.toString()).innerHTML = site.desc;
-    }
-}
-
-/*function to get 3 bookmarks to be read later */
-function getReadLater(){
-    var query_result2 = [
-        {
-            'title':"Vanishing Gradients",
-            'url':"www.mlindia.com/12",
-            'desc':"Maths behind van gradients."
-        },
-        {
-            'title':"Laptop Prices",
-            'url':"www.techplace.com/laptops",
-            'desc':"Compare products side by side."
-        },
-        {
-            'title':"World News",
-            'url':"www.newschannel.com/world",
-            'desc':"Fresh News."
-        }
-    ]
-
-    for (var i=1;i<4;i++){
-        var site = query_result2[i-1]
-        console.log(site)
-        document.getElementById('tt'+i.toString()).innerHTML = site.title;        
-        document.getElementById('uu'+i.toString()).innerHTML = site.url;
-        document.getElementById('dd'+i.toString()).innerHTML = site.desc;
-    }
 }
 
 /** function to import bookmarks from chrome and send to server */
@@ -198,7 +253,7 @@ function postImportData(data){
     xhr.send(JSON.stringify({'instruction':'import','data':data}));
     xhr.onload = function() {
         var msg = document.getElementById('message')
-        console.log("HELLO")
+        console.log("IMPORT RESPONSE:")
         console.log(this.responseText);
         var data = JSON.parse(this.responseText);
         console.log(data, Object.keys(data).length, this.responseText.length);
@@ -206,9 +261,8 @@ function postImportData(data){
             msg.innerHTML = 'Did not recieve data! Please try again.'
         }
         else
-        {
-            var n = data.n
-            msg.innerHTML = 'Done! Received Bookmarks: '+n.toString()
+        {    var n = data.n
+            msg.innerHTML = 'Success! Received Bookmarks: '+n.toString()
         }
     }    
 }
@@ -219,7 +273,7 @@ function importBM(){
     impbutton.addEventListener('click', (ev)=>{
         var msg = document.getElementById('message')
         msg.style.display = 'block'
-        msg.innerHTML = "Importing..."
+        msg.innerHTML = "Importing... This can take a while!"
         window.printBookmarks('0')
         window.postImportData(window.bookmarks_arr) 
     })
@@ -241,30 +295,35 @@ function tagBar(){
     var tagbar = document.getElementById('tagbar')
     tagbar.addEventListener('keydown',(ev) => {
         if(ev.keyCode===13){
+            document.getElementById('taghold').style.display = 'block'
             addTag(tagbar.value)
             tagbar.value = ''
         }
     })
 }
 
+
 window.onload=function(){
+    //load recents
+    recentlyAdded(3)
+
+    //load read later
+    recentlyLater(3)
+
     //toggle add header
     addToggle()
 
     //get title and url of current tab
-    getUrl()    
+    getUrl(addTag)    
     
     //enter button in input tagbar
-    tagBar()
-
-    //get recent sites
-    getRecent()
-
-    //get read later sites
-    getReadLater()
+    tagBar()    
 
     //import button
     importBM()
+
+    //get folder list
+    getFolderOptions()
 
     //opens main page
     document.getElementById('manage').addEventListener('click', (ev) =>{

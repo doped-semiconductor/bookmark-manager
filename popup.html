@@ -24,14 +24,16 @@
 
         <div class = "sect" id="tags">
             Tags
+            <text id="tagmsg" style="font-size:small;padding-left: 10px;">(Loading)</text>
         </div> 
 
-        <div class="sect" id="addform">
-            <!--invisible tag holder-->
-            <div id="taghold">
-                <text id="tend"></text>
-            </div>
-            <!--ends-->            
+        <!--invisible tag holder-->
+        <div id="taghold">
+            <text id="tend"></text>
+        </div>
+        <!--ends--> 
+
+        <div class="sect" id="addform">                       
             <label class="labels">Title:</label>
             <input class="add" id="title" />
             <br>
@@ -39,10 +41,14 @@
             <input class="add" id="url" />
             <br>            
             <label class="labels">Tags:</label>
-            <input class="add" id="tagbar" />
+            <input class="add" id="tagbar" placeholder="Add your own tags" />
             <br>
             <label class="labels">Folder:</label>
-            <input class="add" id="parent" />
+            <select class="add" id="parent" name="choose">
+                <option value="x">Add Folder</option>
+            </select>
+            <!--<input class="add" id="parent" />-->
+            
             <label class="labels"></label>
             
                 <button class="asubmit" id="ab1">Add</button>
@@ -51,7 +57,7 @@
         </div>
         
         <div class = "sect" id="recently">
-            <div class="left" id="rt">Recently visited</div>
+            <div class="left" id="rt">Recently Added</div>
             <div class="right"><button id = "showallrecent">Show All</button></div>
         </div> 
 
@@ -59,45 +65,38 @@
             <div class="recd" id="r1">
                 <a class="recs" id="t1"></a>
                 <a class="url" id="u1"></a>
-                <a class="desc" id="d1"></a>
             </div>
             <div class="recd" id="r2">
                 <a class="recs" id="t2"></a>
-                <a class="url" id="u2"></a>
-                <a class="desc" id="d2"></a>                
+                <a class="url" id="u2"></a>                
             </div>   
             <div class="recd" id="r3">
                 <a class="recs" id="t3"></a>
-                <a class="url" id="u3"></a>
-                <a class="desc" id="d3"></a>                
+                <a class="url" id="u3"></a>                
             </div>
-        </div>        
-        <!--
-            <div class = "sect" >
-            
-        </div> 
-        -->     
+        </div>   
         
         <div class = "sect" id="later">
             <div class="left">Read Later</div>
             <div class="right"><button id = "showalllater">Show All</button></div>
         </div> 
 
+        <div class="sect" id="rlMsg" style="display: none; font-size: small;">
+            Looks like you need to add content here!
+        </div>
+
         <div class="sect" id="readlater">
             <div class="recd" id="l1">
                 <a class="recs" id="tt1"></a>
                 <a class="url" id="uu1"></a>
-                <a class="desc" id="dd1"></a>
             </div>
             <div class="recd" id="l2">
                 <a class="recs" id="tt2"></a>
-                <a class="url" id="uu2"></a>
-                <a class="desc" id="dd2"></a>                
+                <a class="url" id="uu2"></a>               
             </div>   
             <div class="recd" id="l3">
                 <a class="recs" id="tt3"></a>
-                <a class="url" id="uu3"></a>
-                <a class="desc" id="dd3"></a>                
+                <a class="url" id="uu3"></a>               
             </div>
         </div>
 

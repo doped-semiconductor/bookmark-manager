@@ -64,18 +64,13 @@ div{
 
 .recd{
     width: 30%;
+    cursor: pointer;
 }
 
 .url{
     display: block;
     color: gray;
     font-size: smaller;
-}
-
-.desc{
-    display: block;
-    font-size: small;
-    
 }
 
 a{
@@ -170,9 +165,9 @@ a{
     width: 450px;
     height: auto;
     padding: 2px;
-    margin: 2px 2px 7px;
+    margin: 2px 2px 7px;    
     word-break:break-all;
-    display: inline-block;
+    display: none;
 }
 
 #home{
