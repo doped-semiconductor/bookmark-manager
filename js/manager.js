@@ -192,7 +192,7 @@ function recentlyLater(){
     }
 }
 
-function searchF(instruction,type,data){
+async function searchF(instruction,type,data){
     var send = {
         instruction:instruction,
         type:type,
@@ -207,7 +207,7 @@ function searchF(instruction,type,data){
         console.log(this.responseText);
         var data = JSON.parse(this.responseText);
         var sr = document.getElementById('sr')
-        if (Object.keys(data).length === 1){
+        if (Object.keys(data).length === 1 || data.output===undefined){
             console.log('Couldnt get data')
             sr.innerHTML = "Sorry! Could not connect..."
         }
@@ -232,6 +232,10 @@ function searchF(instruction,type,data){
                 for(let i = 0; i<data.output.length; i++){
                     var n;
                     var site = data.output[i]
+                    try{
+                        //console.log('site: ',site[i])
+                        similarF(site.id)}
+                    catch(e){}
                     var br = document.createElement('br')                
                     var p1 = document.createElement('a')
                     p1.classList.add('title')
@@ -254,4 +258,71 @@ function searchF(instruction,type,data){
             }            
         }
     }
+}
+
+function similarF(bmID){
+
+    var send = {
+        instruction:'similar',
+        data:bmID
+    }
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://localhost:5000/", true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify(send));
+    xhr.onload = function() {
+        console.log("GOT RESPONSE:")
+        console.log(this.responseText);
+        var data = JSON.parse(this.responseText);
+        var sb = document.getElementById('sb')
+        if (Object.keys(data).length === 1){
+            console.log('Couldnt get data')
+            sb.innerHTML = "Sorry! Could not connect..."
+        }
+        else
+        {
+            console.log(data.output)
+            if (data.output.length===0){
+                sb.innerHTML = 'No Results!'                
+            }
+            
+            else{
+                sb.innerHTML = ''
+                function titleCase(sentence) {
+                    sentence = sentence.toLowerCase().split(" ");
+                    for (let i = 0; i < sentence.length; i++) {
+                      sentence[i] = sentence[i][0].toUpperCase() + sentence[i].slice(1);
+                    }
+                    
+                    return sentence.join(" ");
+                }
+                var parent = sb
+                for(let i = 0; i<data.output.length; i++){
+                    var n;
+                    var site = data.output[i]
+                    var br = document.createElement('br')                
+                    var p1 = document.createElement('a')
+                    p1.classList.add('title')
+                    n = document.createTextNode(titleCase(site.title))
+                    p1.appendChild(n)
+                    p1.setAttribute("href", site.url);
+                    var p2 = document.createElement('a')
+                    p2.classList.add('url')
+                    n = document.createTextNode(site.url)
+                    p2.appendChild(n) 
+                    p2.setAttribute("href", site.url);
+                    var div = document.createElement('div')
+                    div.classList.add('rlunit')
+                    div.appendChild(p1)
+                    div.appendChild(br)
+                    div.appendChild(p2)
+                    parent.appendChild(div)
+                }
+            }
+        }
+    }
+}
+
+function similarFP(id,cb){
+    cb(id)
 }
