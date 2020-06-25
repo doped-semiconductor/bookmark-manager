@@ -23,9 +23,9 @@
             <div class="right">
                 <input placeholder="Search" id="searchbar"/>
                 <select id="searchoption" name="choose">
-                    <option value="1">Title</option>
-                    <option value="2">Tags</option>
-                    <option value="3">Domain</option>
+                    <option value="byTitle">Title</option>
+                    <option value="byTag">Tags</option>
+                    <option value="byDomain">Domain</option>
                 </select>
             </div> 
         </div>
@@ -34,42 +34,16 @@
             Display Files
         </div>
         <div class = "cont" id="latpanel">
-            <div class="rlunit">
-                <p class="title">Maths with Vedas</p>
-                <p class="url">ww.wdjhnefh.com</p>
-                <p class="desc">Practice bla bla</p>
-            </div>
-            <div class="rlunit">
-                <p class="title">Maths with Vedas</p>
-                <p class="url">ww.wdjhnefh.com</p>
-                <p class="desc">Practice bla bla</p>
-            </div>
-            <div class="rlunit">
-                <p class="title">Maths with Vedas</p>
-                <p class="url">ww.wdjhnefh.com</p>
-                <p class="desc">Practice bla bla</p>
-            </div>
+            <div id="latmsg" style="display: none;font-size: medium;margin-left:10px">None Added Yet!</div>            
         </div>
         <div class = "cont" id="recpanel">
-            <div class="rlunit">
-                <p class="title">Science with Vedas</p>
-                <p class="url">ww.wdjhnefh.com</p>
-                <p class="desc">Practice bla bla</p>
-            </div>
-            <div class="rlunit">
-                <p class="title">Science with Vedas</p>
-                <p class="url">ww.wdjhnefh.com</p>
-                <p class="desc">Practice bla bla</p>
-            </div>
-            <div class="rlunit">
-                <p class="title">Science with Vedas</p>
-                <p class="url">ww.wdjhnefh.com</p>
-                <p class="desc">Practice bla bla</p>
-            </div>
+            <div id="recmsg" style="display: none;font-size: medium;margin-left:10px">None Yet!</div>
         </div>
         <div class="cont" id="searchpanel">
             <p>Search Results</p>
+            <div id="sr"></div>
             <p>Similar Bookmarks</p>
+            <div id="sb"></div>
         </div>
 
     </body>

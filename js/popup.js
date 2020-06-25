@@ -12,6 +12,44 @@ functions:
     a. toggle
 */
 
+/* post data {instruction,data} to server */
+
+
+/* add curr page as bookmark */
+function addBookMark(rlbool){
+    var data = {
+        title: null,
+        url: null,
+        tags: [],
+        rl: rlbool,
+        date: Date.now(),
+        parent: null
+    }
+    data.title = document.getElementById('title').value
+    data.url = document.getElementById('url').value
+    var user_tags = document.getElementsByClassName('tagword')
+    for(let i = 0; i<user_tags.length; i++){
+        data.tags.push(user_tags[i].innerHTML)
+    }
+    var parent = document.getElementById("parent");
+    data.parent = parent.options[parent.selectedIndex].value;
+    //console.log('bm:',data)
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://localhost:5000/", true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify({instruction:"newbm",data:data}));
+    xhr.onload = function() {
+        console.log("GOT newbm  rESPONSE:")
+        var data = JSON.parse(this.responseText);
+        if (Object.keys(data).length === 1){
+            console.log('Couldnt get data')
+        }
+        else{
+            alert('Bookmark added!')
+        }
+    }    
+}
+
 /* get folder options */
 function getFolderOptions(){
     var xhr = new XMLHttpRequest();
@@ -324,6 +362,9 @@ window.onload=function(){
 
     //get folder list
     getFolderOptions()
+
+    //add curr page as book mark button
+    //addBookMark()
 
     //opens main page
     document.getElementById('manage').addEventListener('click', (ev) =>{

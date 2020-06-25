@@ -10,7 +10,6 @@ window.onload = function(){
     driver()
 }
 
-
 function driver(){
 
     /* navigation buttons */
@@ -28,6 +27,7 @@ function driver(){
         var div = document.getElementById('navpanel')
         div.style.display = 'none';
         sp.style.display = 'none';
+        recentlyLater()
         
     })
 
@@ -40,6 +40,7 @@ function driver(){
         var div = document.getElementById('navpanel')
         div.style.display = 'none';
         sp.style.display = 'none';
+        recentlyVisited()
 
         
     })
@@ -58,10 +59,12 @@ function driver(){
 
     /* Search bar */
     var search = document.getElementById('searchbar')
-    var opt = document.getElementById('searchoption')
-
     search.addEventListener('keydown',(ev) => {
         if(ev.keyCode===13){
+            var opt = document.getElementById('searchoption')
+            var op = opt.options[opt.selectedIndex].value;
+            searchF('search',op,search.value)
+            //console.log('search: ',search.value,op)
             sp.style.display = 'block';
             var div = document.getElementById('navpanel')
             div.style.display = 'none';
@@ -73,4 +76,182 @@ function driver(){
             /* run search query */
         }
     })
+}
+
+function recentlyVisited(){
+    var data = {
+        "lim":100
+    }
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://localhost:5000/", true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify({'instruction':'recent', "data":data}));
+    xhr.onload = function() {
+        //console.log("GOT RESPONSE:")
+        //console.log(this.responseText);
+        var data = JSON.parse(this.responseText);
+        //console.log(data, Object.keys(data).length);
+        if (Object.keys(data).length === 1){
+            console.log('Couldnt get data')
+            document.getElementById('recmsg').innerHTML = 'Could not connect'
+            document.getElementById('recmsg').style.display = 'block'
+        }
+        else
+        {
+            //console.log(data.output) 
+            if (data.output.length===0){
+                document.getElementById('recmsg').innerHTML = 'No Results!'
+                document.getElementById('recmsg').style.display = 'block'
+            }
+            
+            else{
+                function titleCase(sentence) {
+                    sentence = sentence.toLowerCase().split(" ");
+                    for (let i = 0; i < sentence.length; i++) {
+                      sentence[i] = sentence[i][0].toUpperCase() + sentence[i].slice(1);
+                    }
+                    
+                    return sentence.join(" ");
+                }
+                var parent = document.getElementById('recpanel')
+                for(let i = 0; i<data.output.length; i++){
+                    var n, n2;
+                    var site = data.output[i]
+                    var br = document.createElement('br')                
+                    var p1 = document.createElement('a')
+                    p1.classList.add('title')
+                    n = document.createTextNode(titleCase(site.title))
+                    p1.appendChild(n)
+                    p1.setAttribute("href", site.url);
+                    var p2 = document.createElement('a')
+                    p2.classList.add('url')
+                    n = document.createTextNode(site.url)
+                    p2.appendChild(n) 
+                    p2.setAttribute("href", site.url);
+                    var div = document.createElement('div')
+                    div.classList.add('rlunit')
+                    div.appendChild(p1)
+                    div.appendChild(br)
+                    div.appendChild(p2)
+                    parent.appendChild(div)         
+                    
+                }
+            }            
+        }
+    }
+}
+
+function recentlyLater(){
+    var data = {
+        "lim":100
+    }
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://localhost:5000/", true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify({'instruction':'later', "data":data}));
+    xhr.onload = function() {
+        console.log("GOT RESPONSE:")
+        console.log(this.responseText);
+        var data = JSON.parse(this.responseText);
+        //console.log(data, Object.keys(data).length);
+        if (Object.keys(data).length === 1){
+            console.log('Couldnt get data')
+        }
+        else
+        {
+            //console.log(data.output) 
+            if (data.output.length===0){
+                document.getElementById('latmsg').style.display = 'block'
+            }
+            
+            else{
+                var parent = document.getElementById('latpanel')
+                for(let i = 0; i<data.output.length; i++){
+                    var n;
+                    var site = data.output[i]      
+                    var br = document.createElement('br')           
+                    var p1 = document.createElement('a')
+                    p1.classList.add('title')
+                    p1.setAttribute("href", site.url);
+                    n = document.createTextNode(site.title)
+                    p1.appendChild(n)
+                    var p2 = document.createElement('a')
+                    p2.classList.add('url')
+                    p2.setAttribute("href", site.url);
+                    n = document.createTextNode(site.title)
+                    p2.appendChild(n) 
+                    var div = document.createElement('div')
+                    div.classList.add('rlunit')
+                    div.appendChild(p1)
+                    div.appendChild(br)
+                    div.appendChild(p2)
+                    parent.appendChild(div)
+                }
+            }            
+        }
+    }
+}
+
+function searchF(instruction,type,data){
+    var send = {
+        instruction:instruction,
+        type:type,
+        data:data
+    }
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://localhost:5000/", true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify(send));
+    xhr.onload = function() {
+        console.log("GOT RESPONSE:")
+        console.log(this.responseText);
+        var data = JSON.parse(this.responseText);
+        var sr = document.getElementById('sr')
+        if (Object.keys(data).length === 1){
+            console.log('Couldnt get data')
+            sr.innerHTML = "Sorry! Could not connect..."
+        }
+        else
+        {
+            console.log(data.output)
+            if (data.output.length===0){
+                sr.innerHTML = 'No Results!'                
+            }
+            
+            else{
+                sr.innerHTML = ''
+                function titleCase(sentence) {
+                    sentence = sentence.toLowerCase().split(" ");
+                    for (let i = 0; i < sentence.length; i++) {
+                      sentence[i] = sentence[i][0].toUpperCase() + sentence[i].slice(1);
+                    }
+                    
+                    return sentence.join(" ");
+                }
+                var parent = sr
+                for(let i = 0; i<data.output.length; i++){
+                    var n;
+                    var site = data.output[i]
+                    var br = document.createElement('br')                
+                    var p1 = document.createElement('a')
+                    p1.classList.add('title')
+                    n = document.createTextNode(titleCase(site.title))
+                    p1.appendChild(n)
+                    p1.setAttribute("href", site.url);
+                    var p2 = document.createElement('a')
+                    p2.classList.add('url')
+                    n = document.createTextNode(site.url)
+                    p2.appendChild(n) 
+                    p2.setAttribute("href", site.url);
+                    var div = document.createElement('div')
+                    div.classList.add('rlunit')
+                    div.appendChild(p1)
+                    div.appendChild(br)
+                    div.appendChild(p2)
+                    parent.appendChild(div)         
+                    
+                }
+            }            
+        }
+    }
 }

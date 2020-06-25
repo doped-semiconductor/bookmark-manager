@@ -10,6 +10,14 @@ body{
     padding: 0;
 }
 
+a{
+    text-decoration: none;    
+}
+
+a:visited { text-decoration: none;  }
+a:hover { text-decoration: none; color:teal; }
+a:focus { text-decoration: none;  }
+
 .cont{
     padding: 10px 15px;
 }
@@ -88,16 +96,13 @@ select{
 }
 
 .title{
+    color: darkslategray;
     font-size: large;
 }
 
 .url{
     color: gray;
     font-size: small;
-}
-
-.desc{
-    font-size: medium;
 }
 
 #navpanel{
