@@ -107,6 +107,11 @@ select{
 
 #navpanel{
     display: block;
+    border: 1px solid salmon;
+    height: 60%;
+    padding: 10px;
+    margin: 20px;
+    font-size: medium;
 }
 
 #recpanel{

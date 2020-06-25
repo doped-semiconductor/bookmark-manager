@@ -31,6 +31,7 @@ function addBookMark(rlbool){
     for(let i = 0; i<user_tags.length; i++){
         data.tags.push(user_tags[i].innerHTML)
     }
+    console.log('tags:',data.tags)
     var parent = document.getElementById("parent");
     data.parent = parent.options[parent.selectedIndex].value;
     //console.log('bm:',data)
@@ -149,7 +150,7 @@ function recentlyLater(n){
                 //console.log(site)
                 document.getElementById('tt'+i.toString()).innerHTML = titleCase(site.title);        
                 document.getElementById('uu'+i.toString()).innerHTML = site.url;
-                document.getElementById('rr'+i.toString()).addEventListener('click',(ev)=>{
+                document.getElementById('l'+i.toString()).addEventListener('click',(ev)=>{
                     window.open(site.url)
                 })
             }
@@ -364,7 +365,8 @@ window.onload=function(){
     getFolderOptions()
 
     //add curr page as book mark button
-    //addBookMark()
+    document.getElementById('ab1').addEventListener('click',(ev)=>{addBookMark(false)})
+    document.getElementById('ab2').addEventListener('click',(ev)=>{addBookMark(true)})
 
     //opens main page
     document.getElementById('manage').addEventListener('click', (ev) =>{

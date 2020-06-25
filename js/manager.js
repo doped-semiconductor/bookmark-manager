@@ -12,6 +12,11 @@ window.onload = function(){
 
 function driver(){
 
+    /* icon align */
+    var picdiv = document.getElementById('currfolder')
+    //var i1 = document.getElementById('i1')
+    picdiv.style.lineHeight = picdiv.style.height
+
     /* navigation buttons */
     var lp = document.getElementById('later')
     var rp = document.getElementById('recent')
