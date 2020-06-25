@@ -95,6 +95,26 @@ select{
     padding: 10px;;
 }
 
+img{
+    cursor: pointer;
+}
+
+.icon{
+    float:left;line-height:50px;height:50px;
+}
+
+.iconr{
+    float:right;line-height:50px;height:50px;
+}
+
+.hoverhide{
+    display: none;
+}
+
+.caption{
+    line-height: 50px;height: 50px;cursor: pointer;
+}
+
 .title{
     color: darkslategray;
     font-size: large;
@@ -107,7 +127,6 @@ select{
 
 #navpanel{
     display: block;
-    border: 1px solid salmon;
     height: 60%;
     padding: 10px;
     margin: 20px;

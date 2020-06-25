@@ -17,7 +17,7 @@
                     Read Later
                 </button>
                 <button id="recent">
-                    Recently Visited
+                    Recently Added
                 </button>
             </div>
             <div class="right">
@@ -30,11 +30,25 @@
             </div> 
         </div>
 
-        <div class = "cont" id="navpanel">            
-            <div id="currfolder" style="line-height: 2em;border:1px solid saddlebrown;" >
-                <img id = "i1" src = "./css/folder.png">
-                Current Folder
+        <div class = "cont" id="navpanel"> 
+            <!--
+                <div id="currfolder" >Current</div>
+            <dic id="contents" style="margin-left: 20%;border: 1px solid salmon;">
+                <p>sjdhjisj</p>
+                <p>sjdhjisj</p>
+                <p>sjdhjisj</p>
+            </dic>-->   
+            <div id="parent">                
+                <text style="line-height: 50px;height: 50px;">Main</text>
+                <img class="icon" title = "Go Back" src="./css/goback.png">
+                <img class="iconr" title = "Add Folder" src="./css/addfolder.png">                
+                
             </div>
+            <div id="sub" style="margin-left: 5%;width:70%">
+                <!--DISPLAY SPACE FOR FOLDER NAVIGATION-->
+                <div id="marker"></div>
+            </div>  
+            
         </div>
 
 

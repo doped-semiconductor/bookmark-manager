@@ -10,12 +10,11 @@ window.onload = function(){
     driver()
 }
 
-function driver(){
 
-    /* icon align */
-    var picdiv = document.getElementById('currfolder')
-    //var i1 = document.getElementById('i1')
-    picdiv.style.lineHeight = picdiv.style.height
+
+function driver(){
+    /* load navpanel */
+    getChildren('0')
 
     /* navigation buttons */
     var lp = document.getElementById('later')
@@ -330,4 +329,79 @@ function similarF(bmID){
 
 function similarFP(id,cb){
     cb(id)
+}
+
+function getChildren(id1){
+    console.log('getting children for: ',id1)
+
+    var send = {
+        instruction:'files',
+        data:id1
+    }
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://localhost:5000/", true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify(send));
+    xhr.onload = function() {
+        console.log("GOT NAV RESPONSE:")
+        //console.log(this.responseText);
+        var data = JSON.parse(this.responseText);
+        var parent = document.getElementById('parent')
+        var sub = document.getElementById('sub')
+        if (Object.keys(data).length === 1){
+            console.log('Couldnt get data')
+            sub.innerHTML = "Sorry! Could not connect..."
+        }
+        else
+        {
+            console.log(data.output)
+            if (data.output.length===0){
+                sub.innerHTML = 'No Results!'                
+            }
+            else{
+                //add to sub
+                sub.innerHTML = ''
+                //console.log('NAV FILE',data.output)
+                for(let i=0;i<data.output.length;i++){
+                    var node = data.output[i]
+                    console.log(node)                    
+                    var ids = i.toString()                    
+                    var i1 = document.createElement('img')
+                    var i2 = document.createElement('img')
+                    var t = document.createElement('a')
+                    t.append(document.createTextNode(node.title))                  
+
+                    if(!node.url){
+                        i1.setAttribute('src','./css/folderb.png')
+                        t.addEventListener('click',(ev)=>{
+                            getChildren(node.id)
+                        })
+                    }
+                    else{
+                        i1.setAttribute('src','./css/bookmarkb.png')
+                        t.setAttribute('href',node.url)                        
+                    }
+                    i2.setAttribute('title','Delete')
+                    i2.setAttribute('src','./css/delete.png')
+                    
+                    i1.classList.add("icon")
+                    i2.classList.add("icon")//,"hoverhide")
+                    i2.style.float = 'right'
+                    t.classList.add("caption")
+                    
+                    var div = document.createElement('div')
+                    div.appendChild(i1)
+                    div.appendChild(t)
+                    div.appendChild(i2)
+
+                    sub.appendChild(div)
+
+                    t = null
+                    i1 = null
+                    i2 = null
+                    div = null                     
+                }
+            }
+        }
+    }
 }
